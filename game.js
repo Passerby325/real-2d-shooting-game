@@ -1,3 +1,27 @@
+// 添加在你的 DOMContentLoaded 事件监听器中或直接放在脚本开头
+document.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+}, { passive: false });
+
+// 禁止双指缩放
+document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+}, { passive: false });
+
+// 禁止双击放大
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(e) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+    }
+    lastTouchEnd = now;
+}, { passive: false });
+
 let animationFrameId; 
 // 防止图片被拖拽
 window.addEventListener('load', function() {
