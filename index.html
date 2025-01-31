@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Contra-like Shooting Game</title>
+    <style>
+        * {
+            /* 为所有元素添加不可选中属性 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        canvas {
+            background: #000;
+            display: block;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        #time {
+            text-align: center;
+            font-size: 24px;
+            color: orange;
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .button {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: black;
+            touch-action: manipulation;
+        }
+
+        #leftButton {
+            bottom: 80px;
+            left: 20px;
+        }
+
+        #rightButton {
+            bottom: 80px;
+            left: 100px;
+        }
+
+        #jumpButton {
+            bottom: 80px;
+            right: 100px;
+        }
+
+        #shootButton {
+            bottom: 80px;
+            right: 20px;
+        }
+
+        #playButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 24px;
+            color: black;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        #winConditions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            color: white;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        #killCount {
+            text-align: center;
+            font-size: 24px;
+            color: orange;
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+        }
+#replayButton {
+    position: fixed !important; /* 使用 fixed 定位 */
+    bottom: 20px !important;   /* 距离底部20px */
+    left: 50% !important;      /* 水平居中 */
+    transform: translateX(-50%) !important; /* 精确居中 */
+    padding: 10px 20px;        /* 适当的内边距 */
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 18px;          /* 合适的字体大小 */
+    color: black;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    display: none;           /* 初始状态隐藏 */
+    /* 移除之前的最大宽度和高度限制 */
+    width: auto;            /* 自适应内容宽度 */
+    height: auto;           /* 自适应内容高度 */
+    line-height: normal;    /* 正常行高 */
+    text-align: center;
+    white-space: nowrap;
+}
+
+#replayButton:active {
+    transform: translateX(-50%) translateY(2px) !important; /* 保持水平居中的同时添加按下效果 */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+        #playButton, #replayButton {
+    /* 移除任何可能影响位置的共享样式 */
+    position: fixed;
+    transform: none;
+}
+
+#playButton {
+    /* 保持 playButton 在中间的样式 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+    </style>
+    <script>
+        // 禁用缩放
+        document.addEventListener('touchmove', function(event) {
+            if (event.scale !== 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 禁用双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // 禁用多指缩放
+        document.addEventListener('gesturestart', function(event) {
+            event.preventDefault();
+        });
+        document.addEventListener('gesturechange', function(event) {
+            event.preventDefault();
+        });
+        document.addEventListener('gestureend', function(event) {
+            event.preventDefault();
+        });
+
+        // 禁用文本选择
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // 禁用拖拽
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // 禁用右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    </script>
+</head>
+<body>
+    <div id="time">Time: 0s</div>
+    <div id="killCount">Enemies Killed: 0</div>
+    <div id="winConditions">Victory Conditions: Kill 20 enemies and survive for 90 seconds.</div>
+    <div id="playButton">Play</div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="leftButton" class="button">←</div>
+    <div id="rightButton" class="button">→</div>
+    <div id="jumpButton" class="button">↑</div>
+    <div id="shootButton" class="button">●</div>
+    <!-- 添加 replay 按钮，初始状态为隐藏 -->
+<div id="replayButton">Replay</div>
+
+<!-- 添加排行榜按钮 -->
+<div id="leaderboardButton" style="position: fixed; top: 10px; left: 10px; z-index: 1000; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; cursor: pointer;">
+    🏆 Leaderboard
+</div>
+
+<!-- 添加排行榜面板 -->
+<div id="leaderboardPanel" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.9); color: white; padding: 20px; border-radius: 10px; z-index: 1001; min-width: 300px;">
+    <h2 style="text-align: center; margin-bottom: 15px;">Top 10 Players</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 1px solid white;">
+                <th style="padding: 8px">Rank</th>
+                <th style="padding: 8px">Name</th>
+                <th style="padding: 8px">Time</th>
+                <th style="padding: 8px">Kills</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+            <!-- 排行榜数据将在这里动态插入 -->
+        </tbody>
+    </table>
+    <button id="closeLeaderboard" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: white; cursor: pointer; font-size: 20px;">×</button>
+</div>
+
+
+
+
+
+
+<!-- Add this after your replayButton div in index.html -->
+<div id="nameInputForm" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 10px; z-index: 1000;">
+    <h2 style="margin-bottom: 15px;">Game Over!</h2>
+    <p id="gameStats" style="margin-bottom: 15px;">
+        Survival Time: <span id="finalTime">0</span>s<br>
+        Enemies Killed: <span id="finalKills">0</span>
+    </p>
+    <input type="text" id="playerName" placeholder="Enter your name" style="padding: 8px; margin-bottom: 10px; width: 200px;">
+    <button id="submitScore" style="padding: 8px 15px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Submit Score</button>
+</div>
+
+
+<!-- Add these before closing </body> tag in index.html -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs,
+            query,
+            orderBy,
+            limit,
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUPR5lOJHgGlt34SXZ9B65m_kax_vdjUg",
+            authDomain: "shooting-2d.firebaseapp.com",
+            databaseURL: "https://shooting-2d-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "shooting-2d",
+            storageBucket: "shooting-2d.firebasestorage.app",
+            messagingSenderId: "646703014415",
+            appId: "1:646703014415:web:1dc76c81fe23cf1196f97a"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Make db available globally
+        window.db = db;
+        window.serverTimestamp = serverTimestamp;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.limit = limit;
+    </script>
+
+<!-- Your game scripts -->
+<script src="game.js"></script>
+
+
+</body>
+</html>
