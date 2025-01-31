@@ -64,6 +64,7 @@ let platformTimeout = null;
 let enemySpawnTimer;
 let platformSpawnTimer;
 let shieldSpawnTimer;
+let finalSurvivalTime = 0;
 
 
 document.addEventListener('keydown', movePlayer);
@@ -185,6 +186,7 @@ function update() {
 
 
     if (gameOver) {
+        finalSurvivalTime = elapsedTime;  // 保存最终时间
         showNameInput();
         return;
     }
@@ -532,13 +534,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 // Firebase-related functions
-async function submitScore(playerName, survivalTime, killCount) {
+
+async function submitScore(playerName) {
     try {
         const scoreData = {
             playerName: playerName,
-            survivalTime: survivalTime,
+            survivalTime: finalSurvivalTime,  // 使用保存的最终时间
             killCount: killCount,
-            timestamp: window.serverTimestamp()
+            timestamp: window.serverTimestamp(),
+            result: finalSurvivalTime >= 90 && killCount >= 20 ? "Victory" : "Defeat"
         };
         
         const docRef = await window.addDoc(window.collection(window.db, "scores"), scoreData);
@@ -551,20 +555,20 @@ async function submitScore(playerName, survivalTime, killCount) {
     }
 }
 
+
 function showNameInput() {
-    const survivalTime = Math.floor((Date.now() - startTime) / 1000);
-    document.getElementById('finalTime').textContent = survivalTime;
+    document.getElementById('finalTime').textContent = finalSurvivalTime;
     document.getElementById('finalKills').textContent = killCount;
     document.getElementById('nameInputForm').style.display = 'block';
     document.getElementById('replayButton').style.display = 'none';
 }
 
 // Add event listener for score submission
+
 document.getElementById('submitScore').addEventListener('click', () => {
     const playerName = document.getElementById('playerName').value.trim();
     if (playerName) {
-        const survivalTime = Math.floor((Date.now() - startTime) / 1000);
-        submitScore(playerName, survivalTime, killCount);
+        submitScore(playerName);  // 不需要重新计算时间
     } else {
         alert("Please enter your name!");
     }
