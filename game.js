@@ -186,10 +186,11 @@ function update() {
 
 
     if (gameOver) {
-        finalSurvivalTime = elapsedTime;  // 保存最终时间
+        if (!finalSurvivalTime) {  // 如果还没有保存最终时间
+            finalSurvivalTime = elapsedTime;  // 保存最终时间
+        }
         showNameInput();
         return;
-    }
 
 
     player.speed = player.baseSpeed + elapsedTime * player.speedGrowthRate;
@@ -249,15 +250,16 @@ function update() {
             if (player.shield && player.shield.active) {
                 player.shield.active = false;
                 enemies.splice(index, 1);
-            } else {
-                gameOver = true;
-		showNameInput(); // 添加这行，显示名字输入框
-        // 可以添加一个死亡原因
-        const survivalTime = Math.floor((Date.now() - startTime) / 1000);
+            }  else {
+        gameOver = true;
+        finalSurvivalTime = Math.floor((Date.now() - startTime) / 1000);  // 立即保存最终时间
         document.getElementById('nameInputForm').querySelector('h2').textContent = 
-            `Game Over! You survived ${survivalTime} seconds`;
-            }
-        }
+            `Game Over! You survived ${finalSurvivalTime} seconds`;
+        showNameInput();
+    }
+}
+
+	    
 
         bullets.forEach((bullet, bIndex) => {
             if (bullet.x < enemy.x + enemy.width &&
@@ -461,6 +463,7 @@ document.getElementById('nameInputForm').style.display = 'none';
     gameStarted = false;
     startTime = null;
     killCount = 0;
+    finalSurvivalTime = 0; 
     
     // 重置玩家位置和状态
     player.x = 400;
@@ -469,6 +472,7 @@ document.getElementById('nameInputForm').style.display = 'none';
     player.isJumping = false;
     player.jumpSpeed = 0;
     player.shield = null;
+	
     
     // 清空数组
     bullets.length = 0;
@@ -536,10 +540,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 // Firebase-related functions
 
 async function submitScore(playerName) {
+    const submitButton = document.getElementById('submitScore');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+
     try {
+        // 确保有最终时间
+        if (finalSurvivalTime === undefined || finalSurvivalTime === null) {
+            finalSurvivalTime = Math.floor((Date.now() - startTime) / 1000);
+        }
+
         const scoreData = {
             playerName: playerName,
-            survivalTime: finalSurvivalTime,  // 使用保存的最终时间
+            survivalTime: finalSurvivalTime,
             killCount: killCount,
             timestamp: window.serverTimestamp(),
             result: finalSurvivalTime >= 90 && killCount >= 20 ? "Victory" : "Defeat"
@@ -552,6 +565,8 @@ async function submitScore(playerName) {
     } catch (error) {
         console.error("Error saving score: ", error);
         alert("Error saving score. Please try again.");
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit Score';
     }
 }
 
