@@ -184,13 +184,25 @@ function update() {
     const elapsedTime = Math.floor((currentTime - startTime) / 1000);
     timeDisplay.textContent = `Time: ${elapsedTime}s`;
 
+    // 检查胜利条件
+    if (elapsedTime >= 1000 && killCount >= 100) {
+        finalSurvivalTime = elapsedTime;  // 立即保存最终时间
+        gameOver = true;
+        document.getElementById('nameInputForm').querySelector('h2').textContent = 
+            `Victory! You survived ${finalSurvivalTime} seconds and killed ${killCount} enemies!`;
+        showNameInput();
+        return;
+    }
 
+
+ // 检查游戏是否已结束
     if (gameOver) {
         if (!finalSurvivalTime) {  // 如果还没有保存最终时间
             finalSurvivalTime = elapsedTime;  // 保存最终时间
         }
         showNameInput();
         return;
+    }
 
 
     player.speed = player.baseSpeed + elapsedTime * player.speedGrowthRate;
