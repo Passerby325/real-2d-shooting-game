@@ -11,6 +11,24 @@ window.addEventListener('load', function() {
         images[i].setAttribute('draggable', 'false');
     }
 });
+let lastPauseTime = 0; // 添加变量来存储最后一次暂停的时间
+
+// 检测页面可见性变化
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') {
+        // 页面重新可见时恢复游戏
+        if (gameStarted && !gameOver) {
+            startTime += Date.now() - lastPauseTime;  // 调整开始时间
+            gameLoop();
+        }
+    } else {
+        // 页面变为不可见时暂停游戏
+        if (gameStarted && !gameOver) {
+            lastPauseTime = Date.now();
+            cancelAnimationFrame(animationFrameId);
+        }
+    }
+});
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
