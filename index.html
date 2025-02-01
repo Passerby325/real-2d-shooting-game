@@ -121,37 +121,35 @@
             -o-user-drag: none;
             user-drag: none;
         }
-#replayButton {
-    position: fixed !important; /* 使用 fixed 定位 */
-    bottom: 20px !important;   /* 距离底部20px */
-    left: 50% !important;      /* 水平居中 */
-    transform: translateX(-50%) !important; /* 精确居中 */
-    padding: 10px 20px;        /* 适当的内边距 */
-    background: rgba(255, 255, 255, 0.7);
-    font-size: 18px;          /* 合适的字体大小 */
-    color: black;
-    cursor: pointer;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 1000;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    touch-action: manipulation;
-    display: none;           /* 初始状态隐藏 */
-    /* 移除之前的最大宽度和高度限制 */
-    width: auto;            /* 自适应内容宽度 */
-    height: auto;           /* 自适应内容高度 */
-    line-height: normal;    /* 正常行高 */
-    text-align: center;
-    white-space: nowrap;
-}
+ #replayButton {
+        position: fixed !important; /* 使用 fixed 定位 */
+        top: 20px !important;       /* 距离顶部20px */
+        right: 20px !important;     /* 距离右侧20px */
+        padding: 10px 20px;        /* 适当的内边距 */
+        background: rgba(255, 255, 255, 0.7);
+        font-size: 18px;          /* 合适的字体大小 */
+        color: black;
+        cursor: pointer;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 1000;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+        display: none;           /* 初始状态隐藏 */
+        width: auto;            /* 自适应内容宽度 */
+        height: auto;           /* 自适应内容高度 */
+        line-height: normal;    /* 正常行高 */
+        text-align: center;
+        white-space: nowrap;
+    }
 
-#replayButton:active {
-    transform: translateX(-50%) translateY(2px) !important; /* 保持水平居中的同时添加按下效果 */
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
+    #replayButton:active {
+        transform: translateY(2px) !important; /* 添加按下效果 */
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
         #playButton, #replayButton {
     /* 移除任何可能影响位置的共享样式 */
     position: fixed;
