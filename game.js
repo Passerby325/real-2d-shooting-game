@@ -624,12 +624,13 @@ async function fetchLeaderboard() {
     try {
         // 获取排序后的前10名玩家
         const querySnapshot = await window.getDocs(
-            window.query(
-                window.collection(window.db, "scores"),
-                window.orderBy("survivalTime", "desc"),
-                window.limit(10)
-            )
-        );
+  window.query(
+    window.collection(window.db, "scores"),
+    window.orderBy("survivalTime", "desc"), // 按存活时间降序排序
+    window.orderBy("killCount", "desc"),     // 时间相同时按击杀数降序排序
+    window.limit(10)
+  )
+);
 
         const leaderboardBody = document.getElementById('leaderboardBody');
         leaderboardBody.innerHTML = ''; // 清空现有数据
