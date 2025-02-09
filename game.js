@@ -114,7 +114,7 @@ const difficultyConfig = {
         initialGravity: 0.5,    // 初始重力值（下落速度）
         maxGravity: 0.65,       // 最大重力值
         scaleRate: 0.001        // 每秒增强的跳跃能力（原0.0005→现在翻倍）
-    }
+    }};
 
 const gameState = {
     currentEnemySpawnMin: difficultyConfig.enemySpawn.initialMin,
