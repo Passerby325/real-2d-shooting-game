@@ -51,17 +51,61 @@ const player = {
     y: 0,
     width: 25,
     height: 25,
-    baseSpeed: 3.5,
-    speed: 3.5,
-    speedGrowthRate: 0.01,
+
+    speed: difficultyConfig.playerSpeed.initial,
+
     isJumping: false,
     jumpSpeed: 0,
-    gravity: 0.5,
-    jumpHeight: -10,
+    gravity: difficultyConfig.playerJump.initialGravity,
+    jumpHeight: difficultyConfig.playerJump.initialJumpHeight,
     ground: 0,
     direction: 'right',
     shield: null
 };
+
+// 添加难度配置和游戏状态
+const difficultyConfig = {
+    enemySpawn: {
+        initialMin: 1200,
+        initialMax: 2000,
+        minLimit: 400,
+        maxLimit: 800,
+        scaleRate: 0.05
+    },
+    enemySpeed: {
+        initial: 1.75,
+        maxSpeed: 4,
+        scaleRate: 0.0015
+    },
+    bulletSpeed: {
+        initial: 5,
+        maxSpeed: 8,
+        scaleRate: 0.001
+    },
+    playerSpeed: {
+        initial: 3.5,
+        maxSpeed: 6,
+        scaleRate: 0.001
+    },
+    playerJump: {
+        initialJumpHeight: -10,
+        maxJumpHeight: -13,
+        initialGravity: 0.5,
+        maxGravity: 0.65,
+        scaleRate: 0.0005
+    }
+};
+
+const gameState = {
+    currentEnemySpawnMin: difficultyConfig.enemySpawn.initialMin,
+    currentEnemySpawnMax: difficultyConfig.enemySpawn.initialMax,
+    currentEnemySpeed: difficultyConfig.enemySpeed.initial,
+    currentBulletSpeed: difficultyConfig.bulletSpeed.initial,
+    currentPlayerSpeed: difficultyConfig.playerSpeed.initial,
+    currentJumpHeight: difficultyConfig.playerJump.initialJumpHeight,
+    currentGravity: difficultyConfig.playerJump.initialGravity
+};
+
 
 const bullets = [];
 const enemies = [];
@@ -198,9 +242,17 @@ function spawnShield() {
 function update() {
     if (!gameStarted) return;
 
+    updateDifficulty();  // 新增难度更新
+    
     const currentTime = Date.now();
     const elapsedTime = Math.floor((currentTime - startTime) / 1000);
     timeDisplay.textContent = `Time: ${elapsedTime}s`;
+
+    // 替换原有的数值增长逻辑
+    player.speed = gameState.currentPlayerSpeed;
+    player.jumpHeight = gameState.currentJumpHeight;
+    player.gravity = gameState.currentGravity;
+    bulletSpeed = gameState.currentBulletSpeed;
 
     // 检查胜利条件
     if (elapsedTime >= 1000 && killCount >= 100) {
@@ -347,6 +399,46 @@ function update() {
     });
 }
 
+// 新增难度更新函数
+function updateDifficulty() {
+    if (!gameStarted || gameOver) return;
+    
+    const elapsedSeconds = (Date.now() - startTime) / 1000;
+    
+    gameState.currentEnemySpawnMin = Math.max(
+        difficultyConfig.enemySpawn.minLimit,
+        difficultyConfig.enemySpawn.initialMin - (elapsedSeconds * difficultyConfig.enemySpawn.scaleRate)
+    );
+    gameState.currentEnemySpawnMax = Math.max(
+        difficultyConfig.enemySpawn.maxLimit,
+        difficultyConfig.enemySpawn.initialMax - (elapsedSeconds * difficultyConfig.enemySpawn.scaleRate)
+    );
+    
+    gameState.currentEnemySpeed = Math.min(
+        difficultyConfig.enemySpeed.maxSpeed,
+        difficultyConfig.enemySpeed.initial + (elapsedSeconds * difficultyConfig.enemySpeed.scaleRate)
+    );
+    
+    gameState.currentBulletSpeed = Math.min(
+        difficultyConfig.bulletSpeed.maxSpeed,
+        difficultyConfig.bulletSpeed.initial + (elapsedSeconds * difficultyConfig.bulletSpeed.scaleRate)
+    );
+    
+    gameState.currentPlayerSpeed = Math.min(
+        difficultyConfig.playerSpeed.maxSpeed,
+        difficultyConfig.playerSpeed.initial + (elapsedSeconds * difficultyConfig.playerSpeed.scaleRate)
+    );
+    
+    gameState.currentJumpHeight = Math.min(
+        difficultyConfig.playerJump.maxJumpHeight,
+        difficultyConfig.playerJump.initialJumpHeight + (elapsedSeconds * difficultyConfig.playerJump.scaleRate)
+    );
+    gameState.currentGravity = Math.min(
+        difficultyConfig.playerJump.maxGravity,
+        difficultyConfig.playerJump.initialGravity + (elapsedSeconds * difficultyConfig.playerJump.scaleRate)
+    );
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -429,10 +521,25 @@ function gameLoop() {
     }
 }
 
+
+
 function startSpawningEnemies() {
     if (enemySpawnTimer) clearInterval(enemySpawnTimer);
-    enemySpawnTimer = setInterval(spawnEnemy, enemySpawnInterval);
+    
+    function scheduleNextSpawn() {
+        const spawnDelay = Math.random() * 
+            (gameState.currentEnemySpawnMax - gameState.currentEnemySpawnMin) + 
+            gameState.currentEnemySpawnMin;
+        
+        enemySpawnTimer = setTimeout(() => {
+            spawnEnemy();
+            if (!gameOver) scheduleNextSpawn();
+        }, spawnDelay);
+    }
+    
+    scheduleNextSpawn();
 }
+
 
 
 function startSpawningPlatforms() {
@@ -526,6 +633,20 @@ document.getElementById('nameInputForm').style.display = 'none';
     gameStarted = true;
     startTime = Date.now();
     gameLoop();
+
+	    Object.assign(gameState, {
+        currentEnemySpawnMin: difficultyConfig.enemySpawn.initialMin,
+        currentEnemySpawnMax: difficultyConfig.enemySpawn.initialMax,
+        currentEnemySpeed: difficultyConfig.enemySpeed.initial,
+        currentBulletSpeed: difficultyConfig.bulletSpeed.initial,
+        currentPlayerSpeed: difficultyConfig.playerSpeed.initial,
+        currentJumpHeight: difficultyConfig.playerJump.initialJumpHeight,
+        currentGravity: difficultyConfig.playerJump.initialGravity
+    });
+
+	    player.speed = gameState.currentPlayerSpeed;
+    player.jumpHeight = gameState.currentJumpHeight;
+    player.gravity = gameState.cur
 }
 
 
