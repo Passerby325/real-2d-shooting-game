@@ -88,14 +88,14 @@ let finalSurvivalTime = 0;
 const difficultyConfig = {
     enemySpawn: {
         initialMin: 1200,
-        initialMax: 2000,
+        initialMax: 4000,
         minLimit: 400,
-        maxLimit: 800,
-        scaleRate: 0.1
+        maxLimit: 1000,
+        scaleRate: 0.3
     },
     enemySpeed: {
-        initial: 1.75,
-        maxSpeed: 4,
+        initial: 2,
+        maxSpeed: 6,
         scaleRate: 0.003
     },
     bulletSpeed: {
@@ -109,8 +109,8 @@ const difficultyConfig = {
         scaleRate: 0.002
     },
     playerJump: {
-        initialJumpHeight: -10,
-        maxJumpHeight: -13,
+        initialJumpHeight: -5,
+        maxJumpHeight: -10,
         initialGravity: 0.5,
         maxGravity: 0.65,
         scaleRate: 0.001
@@ -296,7 +296,7 @@ function update() {
             }
         }
 
-        const collisionBuffer = 15;
+        const collisionBuffer = 10;
         if (enemy.x + collisionBuffer < player.x + player.width &&
             enemy.x + enemy.width - collisionBuffer > player.x &&
             enemy.y + collisionBuffer < player.y + player.height &&
