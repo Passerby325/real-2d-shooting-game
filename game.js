@@ -758,6 +758,7 @@ function updateDifficulty() {
         difficultyConfig.playerJump.maxGravity,
         difficultyConfig.playerJump.initialGravity + (elapsedSeconds * difficultyConfig.playerJump.scaleRate)
     );
+	    console.log(`当前速度: ${gameState.currentEnemySpeed}, 已过时间: ${elapsedSeconds}秒`);
 }
 
  
