@@ -68,7 +68,6 @@ const enemies = [];
 const shields = [];
 const dropHints = [];
 let bulletSpeed = 5;
-let enemySpeed = 1.75;
 let enemySpawnInterval = 1000;
 let gameOver = false;
 let gameStarted = false;
@@ -86,35 +85,36 @@ let finalSurvivalTime = 0;
 
 // 添加难度配置和游戏状态
 const difficultyConfig = {
-    enemySpawn: { // 敌人生成设置
-        initialMin: 1000,  // 初始最小生成间隔（毫秒）
-        initialMax: 1500,  // 初始最大生成间隔（毫秒）
-        minLimit: 200,     // 最终最小生成间隔（最快生成速度）
-        maxLimit: 600,     // 最终最大生成间隔（最快时的随机范围）
-        scaleRate: 5    // 每秒减少的生成间隔（原0.05→现在加快100%）
+    enemySpawn: {
+        initialMin: 1200,
+        initialMax: 2000,
+        minLimit: 400,
+        maxLimit: 800,
+        scaleRate: 0.1
     },
-    enemySpeed: { // 敌人移动速度
-        initial: 2.5,    // 初始速度
-        maxSpeed: 100,      // 最大速度上限
-        scaleRate: 10 // 每秒增加的速度（原0.0015→现在翻倍）
+    enemySpeed: {
+        initial: 1.75,
+        maxSpeed: 4,
+        scaleRate: 0.003
     },
-    bulletSpeed: { // 子弹速度
-        initial: 5,       // 初始子弹速度
-        maxSpeed: 8,      // 最大子弹速度
-        scaleRate: 0.002  // 每秒增加的速度（原0.001→现在翻倍）
+    bulletSpeed: {
+        initial: 5,
+        maxSpeed: 8,
+        scaleRate: 0.002
     },
-    playerSpeed: { // 玩家移动速度
-        initial: 3.5,     // 初始移动速度
-        maxSpeed: 6,      // 最大移动速度
-        scaleRate: 0.002  // 每秒增加的速度（原0.001→现在翻倍）
+    playerSpeed: {
+        initial: 3.5,
+        maxSpeed: 6,
+        scaleRate: 0.002
     },
-    playerJump: { // 玩家跳跃设置
-        initialJumpHeight: -5, // 初始跳跃高度（负值表示向上）
-        maxJumpHeight: -10,     // 最大跳跃高度
-        initialGravity: 0.5,    // 初始重力值（下落速度）
-        maxGravity: 0.65,       // 最大重力值
-        scaleRate: 0.001        // 每秒增强的跳跃能力（原0.0005→现在翻倍）
-    }};
+    playerJump: {
+        initialJumpHeight: -10,
+        maxJumpHeight: -13,
+        initialGravity: 0.5,
+        maxGravity: 0.65,
+        scaleRate: 0.001
+    }
+};
 
 const gameState = {
     currentEnemySpawnMin: difficultyConfig.enemySpawn.initialMin,
@@ -218,7 +218,7 @@ function spawnEnemy() {
         y: y,
         width: 25,
         height: 25,
-        speed: enemySpeed,
+        speed: gameState.currentEnemySpeed,
         direction: direction,
         lastDirection: 'right',
         type: type
@@ -295,7 +295,7 @@ function update() {
             }
         }
 
-        const collisionBuffer = 10;
+        const collisionBuffer = 15;
         if (enemy.x + collisionBuffer < player.x + player.width &&
             enemy.x + enemy.width - collisionBuffer > player.x &&
             enemy.y + collisionBuffer < player.y + player.height &&
@@ -737,7 +737,7 @@ function updateDifficulty() {
     
     gameState.currentEnemySpeed = Math.min(
         difficultyConfig.enemySpeed.maxSpeed,
-        difficultyConfig.enemySpeed.initial * Math.pow(2, elapsedSeconds) //成长速度
+        difficultyConfig.enemySpeed.initial * Math.pow(1.25, elapsedSeconds)
     );
     
     gameState.currentBulletSpeed = Math.min(
@@ -758,7 +758,11 @@ function updateDifficulty() {
         difficultyConfig.playerJump.maxGravity,
         difficultyConfig.playerJump.initialGravity + (elapsedSeconds * difficultyConfig.playerJump.scaleRate)
     );
-	    console.log(`当前速度: ${gameState.currentEnemySpeed}, 已过时间: ${elapsedSeconds}秒`);
+
+    // 新增：更新所有现存敌人的速度
+    enemies.forEach(enemy => {
+        enemy.speed = gameState.currentEnemySpeed;
+    });
 }
 
  
