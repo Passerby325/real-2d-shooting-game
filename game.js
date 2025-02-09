@@ -759,7 +759,7 @@ function updateDifficulty() {
         difficultyConfig.playerJump.initialGravity + (elapsedSeconds * difficultyConfig.playerJump.scaleRate)
     );
 
-    // 新增：更新所有现存敌人的速度
+    // 新增：同步所有现存敌人的速度
     enemies.forEach(enemy => {
         enemy.speed = gameState.currentEnemySpeed;
     });
