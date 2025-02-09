@@ -737,7 +737,7 @@ function updateDifficulty() {
     
     gameState.currentEnemySpeed = Math.min(
         difficultyConfig.enemySpeed.maxSpeed,
-        difficultyConfig.enemySpeed.initial + (elapsedSeconds * difficultyConfig.enemySpeed.scaleRate)
+        difficultyConfig.enemySpeed.initial * Math.pow(1.1, elapsedSeconds)
     );
     
     gameState.currentBulletSpeed = Math.min(
