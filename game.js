@@ -646,7 +646,7 @@ document.getElementById('nameInputForm').style.display = 'none';
 
 	    player.speed = gameState.currentPlayerSpeed;
     player.jumpHeight = gameState.currentJumpHeight;
-    player.gravity = gameState.cur
+    player.gravity = gameState.currentGravity;
 }
 
 
@@ -762,32 +762,3 @@ async function fetchLeaderboard() {
             const row = document.createElement('tr');
             row.style.borderBottom = '1px solid rgba(255, 255, 255, 0.2)';
             row.innerHTML = `
-                <td style="padding: 8px; text-align: center;">${rank}</td>
-                <td style="padding: 8px;">${data.playerName}</td>
-                <td style="padding: 8px; text-align: center;">${data.survivalTime}s</td>
-                <td style="padding: 8px; text-align: center;">${data.killCount}</td>
-            `;
-            leaderboardBody.appendChild(row);
-            rank++;
-        });
-
-        // 显示排行榜面板
-        document.getElementById('leaderboardPanel').style.display = 'block';
-    } catch (error) {
-        console.error("Error fetching leaderboard: ", error);
-        alert("Error loading leaderboard. Please try again.");
-    }
-}
-
-// 添加事件监听器
-document.addEventListener('DOMContentLoaded', () => {
-    // 排行榜按钮点击事件
-    document.getElementById('leaderboardButton').addEventListener('click', fetchLeaderboard);
-
-    // 关闭排行榜按钮点击事件
-    document.getElementById('closeLeaderboard').addEventListener('click', () => {
-        document.getElementById('leaderboardPanel').style.display = 'none';
-    });
-});
-
- 
