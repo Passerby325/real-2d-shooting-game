@@ -91,29 +91,29 @@ const difficultyConfig = {
         initialMax: 2000,
         minLimit: 400,
         maxLimit: 800,
-        scaleRate: 0.05
+        scaleRate: 0.1
     },
     enemySpeed: {
         initial: 1.75,
         maxSpeed: 4,
-        scaleRate: 0.0015
+        scaleRate: 0.003
     },
     bulletSpeed: {
         initial: 5,
         maxSpeed: 8,
-        scaleRate: 0.001
+        scaleRate: 0.002
     },
     playerSpeed: {
         initial: 3.5,
         maxSpeed: 6,
-        scaleRate: 0.001
+        scaleRate: 0.002
     },
     playerJump: {
         initialJumpHeight: -10,
         maxJumpHeight: -13,
         initialGravity: 0.5,
         maxGravity: 0.65,
-        scaleRate: 0.0005
+        scaleRate: 0.001
     }
 };
 
