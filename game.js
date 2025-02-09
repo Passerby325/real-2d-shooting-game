@@ -218,7 +218,7 @@ function spawnEnemy() {
         y: y,
         width: 25,
         height: 25,
-        speed: gameState.currentEnemySpeed,
+        speed: enemySpeed,
         direction: direction,
         lastDirection: 'right',
         type: type
@@ -276,6 +276,14 @@ function update() {
         if (bullet.x < 0 || bullet.x > canvas.width) {
             bullets.splice(index, 1);
         }
+    });
+
+    // 新的速度计算公式：初始速度1.75，每秒增加20%
+    enemySpeed = 1.75 * (1 + elapsedTime * 0.2);
+    
+    // 同步所有现存敌人的速度
+    enemies.forEach(enemy => {
+        enemy.speed = enemySpeed;
     });
 
     enemies.forEach((enemy, index) => {
