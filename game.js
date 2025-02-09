@@ -108,8 +108,8 @@ const difficultyConfig = {
         scaleRate: 0.002
     },
     playerJump: {
-        initialJumpHeight: -10,
-        maxJumpHeight: -13,
+        initialJumpHeight: -5,
+        maxJumpHeight: -10,
         initialGravity: 0.5,
         maxGravity: 0.65,
         scaleRate: 0.001
