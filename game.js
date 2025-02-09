@@ -91,12 +91,12 @@ const difficultyConfig = {
         initialMax: 1500,  // 初始最大生成间隔（毫秒）
         minLimit: 200,     // 最终最小生成间隔（最快生成速度）
         maxLimit: 600,     // 最终最大生成间隔（最快时的随机范围）
-        scaleRate: 1     // 每秒减少的生成间隔（原0.05→现在加快100%）
+        scaleRate: 1.5     // 每秒减少的生成间隔（原0.05→现在加快100%）
     },
     enemySpeed: { // 敌人移动速度
         initial: 2.5,    // 初始速度
         maxSpeed: 7,      // 最大速度上限
-        scaleRate: 1  // 每秒增加的速度（原0.0015→现在翻倍）
+        scaleRate: 1.5 // 每秒增加的速度（原0.0015→现在翻倍）
     },
     bulletSpeed: { // 子弹速度
         initial: 5,       // 初始子弹速度
