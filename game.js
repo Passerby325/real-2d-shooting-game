@@ -90,7 +90,7 @@ const difficultyConfig = {
         initialMax: 2000,
         minLimit: 400,
         maxLimit: 800,
-        scaleRate: 0.1
+        scaleRate: 1
     },
     enemySpeed: {
         initial: 1.75,
@@ -303,7 +303,7 @@ function update() {
             }
         }
 
-        const collisionBuffer = 15;
+        const collisionBuffer = 10;
         if (enemy.x + collisionBuffer < player.x + player.width &&
             enemy.x + enemy.width - collisionBuffer > player.x &&
             enemy.y + collisionBuffer < player.y + player.height &&
