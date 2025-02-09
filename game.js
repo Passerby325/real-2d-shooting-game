@@ -96,7 +96,7 @@ const difficultyConfig = {
     enemySpeed: { // 敌人移动速度
         initial: 2.5,    // 初始速度
         maxSpeed: 100,      // 最大速度上限
-        scaleRate: 1.5 // 每秒增加的速度（原0.0015→现在翻倍）
+        scaleRate: 2.5 // 每秒增加的速度（原0.0015→现在翻倍）
     },
     bulletSpeed: { // 子弹速度
         initial: 5,       // 初始子弹速度
