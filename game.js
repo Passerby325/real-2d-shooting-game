@@ -36,7 +36,7 @@ const timeDisplay = document.getElementById('time');
 const killCountDisplay = document.getElementById('killCount');
 const playButton = document.getElementById('playButton');
 const winConditions = document.getElementById('winConditions');
-const replayButton = document.getElementById('replayButton');
+//const replayButton = document.getElementById('replayButton');
 const groundColor = 'brown';
 let groundHeight = 50;
 
