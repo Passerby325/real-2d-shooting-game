@@ -36,7 +36,7 @@ const timeDisplay = document.getElementById('time');
 const killCountDisplay = document.getElementById('killCount');
 const playButton = document.getElementById('playButton');
 const winConditions = document.getElementById('winConditions');
-//const replayButton = document.getElementById('replayButton');
+const replayButton = document.getElementById('replayButton');
 const groundColor = 'brown';
 let groundHeight = 50;
 
@@ -585,6 +585,12 @@ document.getElementById('nameInputForm').style.display = 'none';
     player.speed = gameState.currentPlayerSpeed;
     player.jumpHeight = gameState.currentJumpHeight;
     player.gravity = gameState.currentGravity;
+
+    // 添加以下重置代码
+    document.getElementById('playerName').value = ''; // 清空姓名输入框
+    const submitButton = document.getElementById('submitScore');
+    submitButton.disabled = false;
+    submitButton.textContent = 'Submit Score';
 }
 
 
@@ -665,6 +671,11 @@ function showNameInput() {
     document.getElementById('finalKills').textContent = killCount;
     document.getElementById('nameInputForm').style.display = 'block';
     document.getElementById('replayButton').style.display = 'none';
+
+    // 添加按钮状态重置
+    const submitButton = document.getElementById('submitScore');
+    submitButton.disabled = false;
+    submitButton.textContent = 'Submit Score';
 }
 
 // Add event listener for score submission
