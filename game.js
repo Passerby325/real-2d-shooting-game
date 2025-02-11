@@ -545,12 +545,11 @@ document.getElementById('nameInputForm').style.display = 'none';
     player.isJumping = false;
     player.jumpSpeed = 0;
     player.shield = null;
-	
+    shields.length = 0;
     
     // 清空数组
     bullets.length = 0;
     enemies.length = 0;
-    shields.length = 0;
     dropHints.length = 0;
     
     // 重置显示
@@ -591,6 +590,13 @@ document.getElementById('nameInputForm').style.display = 'none';
     const submitButton = document.getElementById('submitScore');
     submitButton.disabled = false;
     submitButton.textContent = 'Submit Score';
+
+    // 新增：确保平台状态重置
+    if (platform) {
+        platform = null;
+        clearInterval(platformFlashInterval);
+        clearTimeout(platformTimeout);
+    }
 }
 
 
@@ -671,6 +677,9 @@ function showNameInput() {
     document.getElementById('finalKills').textContent = killCount;
     document.getElementById('nameInputForm').style.display = 'block';
     document.getElementById('replayButton').style.display = 'none';
+
+    // 添加自动聚焦
+    document.getElementById('playerName').focus();
 
     // 添加按钮状态重置
     const submitButton = document.getElementById('submitScore');
@@ -783,5 +792,11 @@ function updateDifficulty() {
         enemy.speed = gameState.currentEnemySpeed;
     });
 }
+
+document.getElementById('playerName').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('submitScore').click();
+    }
+});
 
  
